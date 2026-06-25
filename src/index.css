@@ -500,12 +500,7 @@ dialog::backdrop {
   background-color: var(--bg-tertiary);
 }
 
-/* Custom Cursor Sparkle Trail & Click Sparks */
-@media (hover: hover) {
-  * {
-    cursor: none !important; /* Hide default cursor everywhere on desktop */
-  }
-}
+
 
 /* Trail Sparkles */
 .trail-sparkle {
