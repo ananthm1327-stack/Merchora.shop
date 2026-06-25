@@ -5,7 +5,8 @@ import { useCurrency } from '../../contexts/CurrencyContext';
 import { 
   ArrowRight, ShieldCheck, Truck, RotateCcw, 
   Tv, Shirt, Footprints, Backpack, Home as HomeIcon, Star,
-  Sparkles, Dumbbell, BookOpen, Gamepad2, Car
+  Sparkles, Dumbbell, BookOpen, Gamepad2, Car,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 export const HomePage = () => {
@@ -38,14 +39,29 @@ export const HomePage = () => {
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  // Auto-play interval for the image carousel (every 4 seconds)
+  // Auto-play interval for the image carousel (every 5 seconds)
+  // Re-creates the timer when currentSlide changes, ensuring a full 5s duration per slide.
   useEffect(() => {
+    if (isPaused) return;
     const slideTimer = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % carouselSlides.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(slideTimer);
-  }, [carouselSlides.length]);
+  }, [currentSlide, isPaused, carouselSlides.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide(prev => (prev + 1) % carouselSlides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(prev => (prev - 1 + carouselSlides.length) % carouselSlides.length);
+  };
+
+  const goToSlide = (idx) => {
+    setCurrentSlide(idx);
+  };
 
   // Categories list with matching icons
   const homeCategories = [
@@ -109,13 +125,124 @@ export const HomePage = () => {
 
           {/* Right Column: Sliding Image Carousel with dots navigation */}
           <div style={{ flex: 0.8, width: '100%', maxWidth: '440px', marginInline: 'auto', position: 'relative' }}>
-            <div className="card glass" style={{ padding: '8px', overflow: 'hidden', position: 'relative', height: '360px', width: '100%', border: '1px solid var(--border-color)' }}>
+            <style>{`
+              .carousel-card {
+                padding: 8px;
+                overflow: hidden;
+                position: relative;
+                height: 360px;
+                width: 100%;
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-md);
+                transition: box-shadow var(--transition-normal);
+              }
+              .carousel-card:hover {
+                box-shadow: var(--shadow-lg);
+              }
+              .carousel-slide-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: var(--radius-sm);
+                transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+              }
+              .carousel-slide-active .carousel-slide-img {
+                transform: scale(1.06);
+              }
+              .carousel-arrow {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(18, 16, 26, 0.4);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 12;
+                opacity: 0;
+                transition: opacity 0.3s ease, background 0.2s ease, transform 0.2s ease;
+                cursor: pointer;
+              }
+              .carousel-card:hover .carousel-arrow {
+                opacity: 1;
+              }
+              .carousel-arrow:hover {
+                background: linear-gradient(90deg, #07C8F9, #0D41E1);
+                border-color: transparent;
+                transform: translateY(-50%) scale(1.1);
+                box-shadow: 0 0 12px rgba(7, 200, 249, 0.4);
+              }
+              .carousel-arrow-prev {
+                left: 20px;
+              }
+              .carousel-arrow-next {
+                right: 20px;
+              }
+              .carousel-dots {
+                position: absolute;
+                bottom: 24px;
+                right: 24px;
+                display: flex;
+                gap: 8px;
+                z-index: 12;
+              }
+              .carousel-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 4px;
+                background-color: rgba(255, 255, 255, 0.4);
+                transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+              }
+              .carousel-dot.active {
+                width: 24px;
+                background: linear-gradient(90deg, #07C8F9, #0D41E1);
+              }
+              .carousel-progress-container {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 3px;
+                background-color: rgba(255, 255, 255, 0.1);
+                z-index: 15;
+              }
+              .carousel-progress-bar {
+                height: 100%;
+                background: linear-gradient(90deg, #07C8F9, #0D41E1);
+                width: 0%;
+              }
+              .carousel-progress-bar.run {
+                animation: carouselProgressRun 5000ms linear forwards;
+              }
+              .carousel-progress-bar.paused {
+                animation-play-state: paused;
+              }
+              @keyframes carouselProgressRun {
+                from { width: 0%; }
+                to { width: 100%; }
+              }
+            `}</style>
+            <div 
+              className="carousel-card glass"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
               
               {carouselSlides.map((slide, idx) => {
                 const isActive = currentSlide === idx;
                 return (
                   <div
                     key={idx}
+                    className={isActive ? 'carousel-slide-active' : ''}
                     style={{
                       position: 'absolute',
                       top: '8px',
@@ -123,21 +250,18 @@ export const HomePage = () => {
                       right: '8px',
                       bottom: '8px',
                       opacity: isActive ? 1 : 0,
-                      transform: isActive ? 'scale(1) translateX(0)' : 'scale(0.96) translateX(40px)',
-                      transition: 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transform: isActive ? 'scale(1)' : 'scale(1.08)',
+                      transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
                       zIndex: isActive ? 5 : 1,
-                      pointerEvents: isActive ? 'auto' : 'none'
+                      pointerEvents: isActive ? 'auto' : 'none',
+                      overflow: 'hidden',
+                      borderRadius: 'var(--radius-sm)'
                     }}
                   >
                     <img 
                       src={slide.image} 
                       alt={slide.title} 
-                      style={{ 
-                        width: '100%', 
-                        height: '100%', 
-                        objectFit: 'cover', 
-                        borderRadius: 'var(--radius-sm)' 
-                      }} 
+                      className="carousel-slide-img"
                     />
                     
                     {/* Shadow Overlay + Slide Captions */}
@@ -160,29 +284,40 @@ export const HomePage = () => {
                 );
               })}
               
+              {/* Manual Left/Right navigation chevrons */}
+              <button 
+                className="carousel-arrow carousel-arrow-prev" 
+                onClick={prevSlide}
+                aria-label="Previous Slide"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button 
+                className="carousel-arrow carousel-arrow-next" 
+                onClick={nextSlide}
+                aria-label="Next Slide"
+              >
+                <ChevronRight size={20} />
+              </button>
+
               {/* Overlay Dots Nav indicators */}
-              <div style={{
-                position: 'absolute',
-                bottom: '20px',
-                right: '20px',
-                display: 'flex',
-                gap: '8px',
-                zIndex: 10
-              }}>
+              <div className="carousel-dots">
                 {carouselSlides.map((_, idx) => (
                   <button
                     key={idx}
-                    onClick={() => setCurrentSlide(idx)}
-                    style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      backgroundColor: currentSlide === idx ? 'var(--primary)' : 'rgba(255,255,255,0.4)',
-                      transition: 'all var(--transition-fast)'
-                    }}
+                    onClick={() => goToSlide(idx)}
+                    className={`carousel-dot ${currentSlide === idx ? 'active' : ''}`}
                     title={`Jump to slide ${idx + 1}`}
                   />
                 ))}
+              </div>
+
+              {/* Time Indicator Progress Bar */}
+              <div className="carousel-progress-container">
+                <div 
+                  key={currentSlide} 
+                  className={`carousel-progress-bar run ${isPaused ? 'paused' : ''}`}
+                />
               </div>
 
             </div>
