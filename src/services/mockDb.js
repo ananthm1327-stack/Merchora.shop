@@ -725,6 +725,30 @@ export const mockDb = {
   },
 
   // --- COUPONS ---
+  getCoupons: async () => {
+    await delay(100);
+    return getFromStorage('coupons', defaultCoupons);
+  },
+
+  createCoupon: async (coupon) => {
+    await delay(150);
+    const coupons = getFromStorage('coupons', defaultCoupons);
+    if (coupons.some(c => c.code.toUpperCase() === coupon.code.toUpperCase())) {
+      throw new Error('A coupon with this code already exists.');
+    }
+    coupons.push(coupon);
+    writeToStorage('coupons', coupons);
+    return coupon;
+  },
+
+  deleteCoupon: async (code) => {
+    await delay(100);
+    let coupons = getFromStorage('coupons', defaultCoupons);
+    coupons = coupons.filter(c => c.code.toUpperCase() !== code.toUpperCase());
+    writeToStorage('coupons', coupons);
+    return true;
+  },
+
   validateCoupon: async (code) => {
     await delay(150);
     const coupons = getFromStorage('coupons', defaultCoupons);
