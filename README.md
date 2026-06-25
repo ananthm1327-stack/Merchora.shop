@@ -1,31 +1,47 @@
-# Merchora.shop 🛍️
+# 🛍️ Merchora.shop — Premium Dual-Sided E-Commerce Marketplace
 
-Merchora.shop is a production-ready, highly aesthetic React e-commerce application architected as a **dual-sided marketplace**. It enforces complete separation of user roles (Buyers vs. Sellers) and capabilities, integrating persistent client-side state matching REST API integration specs.
+[![React](https://img.shields.io/badge/React-18.x-blue.svg?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5.x-fast.svg?logo=vite)](https://vitejs.dev/)
+[![CSS](https://img.shields.io/badge/CSS-Vanilla%20HSL-purple.svg?logo=css3)](https://www.w3.org/TR/css-color-4/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 Key Features
+**Merchora.shop** is a production-ready, highly aesthetic, theme-adaptive React application architected as a **dual-sided marketplace**. It enforces complete separation of user roles (Buyers vs. Sellers) and capabilities, integrating dynamic multi-currency conversions, a secure escrow checkout system, and an interactive AI Shopping Assistant.
 
-### 🔐 Multi-Role Authentication System
-- **Inactivity Logouts:** Automatic watchdog logouts users after 10 minutes of idle inactivity using mouse/keyboard listeners.
-- **Verification Timers:** Mock-verifies accounts upon signup with email notification popups.
-- **JWT Refresh Simulation:** Secures session caches using secure browser spaces.
-- **Double Registration Schemes:** Collects distinct buyer information (name, address, cards) and seller information (business name, Contact Phone, EIN, Routing targets).
+---
 
-### 🛒 Real-Time Cart Reconciliation
-- **Deleted Items Check:** Automatically purges items from active buyer carts if the corresponding product is deleted or set to 'draft' by a merchant.
-- **Price Shift Watcher:** Dynamically updates cart prices if the seller changes the item price, warning the user.
-- **Inventory Caps:** Automatically checks stock, adjusting/capping the quantity and preventing checkout if items are sold out.
+## 🚀 Key System Features
 
-### 📊 Seller Console & Live Analytics
-- **Interactive SVG Charts:** A pure responsive SVG line graph mapping month-on-month revenues, eliminating external package bloat.
-- **Stock Warnings:** Visual warning highlights for products with inventory $\le 5$ units.
-- **Order Manifest Tracker:** Enables managing customer order status (Pending → Processing → Shipped → Completed) and attaching carrier tracking numbers.
-- **Payout Gateways:** Request net payouts (excludes 10% fee) straight to bank accounts with instantaneous approval logs.
+### 🔐 1. Multi-Role Authentication & Inactivity Protection
+*   **Dual Portal Access:** Distinct registration schemes for Buyers (shipping address, checkout preferences) and Sellers (business name, Contact Phone, EIN, bank routing targets).
+*   **Inactivity Watchdog:** Active mouse/keyboard listeners automatically trigger a secure logout after **10 minutes** of idle inactivity to protect shared terminals.
+*   **Sandbox Quick Login:** Includes quick-bypass controls in development for instant testing of both roles.
+
+### 🛒 2. Dynamic Real-Time Cart Reconciliation
+*   **Deleted Items Check:** Automatically purges items from active buyer carts if a merchant deletes a product or sets it to 'draft'.
+*   **Price Shift Watcher:** Monitors pricing adjustments; if a seller edits a product's price, the cart is dynamically recalculated, and the buyer is warned.
+*   **Inventory Caps:** Validates stock levels in real time at checkout, capping the purchase quantity and preventing checkout if items are sold out.
+
+### 📊 3. Seller Console & Financial Ledger
+*   **Interactive SVG Charts:** Features a custom, lightweight, pure SVG line graph displaying monthly performance trends ($ / INR) without external dependency bloat.
+*   **Inventory Health Monitor:** Triggers warning highlights for variants with stock levels $\le 5$ units.
+*   **Order Manifest Tracker:** Enables updating sales fulfillment stages (Pending → Processing → Shipped → Completed) with carrier tracking codes.
+*   **Escrow Payouts:** Calculates payout balances minus a flat **10% marketplace commission**. Permits instant payout requests to linked banking targets with real-time ledger updates.
+
+### 🤖 4. Conversational AI Shopping Agent
+*   **Catalog Query Parsing:** Searches the 100-item local database in real time to recommend products based on user prompts (e.g. *"show me shoes under $50"*).
+*   **Interactive Product Cards:** Renders clickable deep-link product preview cards inside the chat bubble for instant navigation to product detail pages.
+*   **E-Commerce QA:** Answers platform policy questions regarding escrow, refunds, commission fees, and shipping.
+
+### 🌐 5. Global Policy Modals & Toast Alerts
+*   **Cookie Consent Banner:** Elegant glassmorphic banner offering persistent cart consent options on first-visit.
+*   **Global Modal Dispatcher:** Intercepts custom window events to serve accessible modal overlays for *Privacy Policy*, *Terms of Sale*, and *Contact Support tickets*.
+*   **Toast Stack:** Custom context-driven, non-overlapping floating notifications replacing browser native alerts.
 
 ---
 
 ## 🔑 Sandbox Credentials
 
-To explore the dual interfaces immediately without completing registration, use these pre-filled credentials:
+To explore both interfaces immediately without completing registration, use these pre-filled credentials:
 
 | Role | Username / Email | Password |
 | :--- | :--- | :--- |
@@ -34,50 +50,63 @@ To explore the dual interfaces immediately without completing registration, use 
 
 ---
 
-## 🛠️ File Structure
+## 🛠️ Tech Stack & Architecture
 
-The project directory is structured as follows:
+*   **Framework**: React 18 with Vite.
+*   **Styling**: 100% custom Vanilla CSS utilizing HSL color tokens for dark/light themes.
+*   **Design Tokens**: Custom typeface scales (Outfit for display, Inter for body text) with responsive viewport break-points.
+*   **Global Contexts**: Decoupled state management handled via 6 React Providers:
+    1.  `AuthContext` — Authentication, session state, inactivity watchdog.
+    2.  `CartContext` — Stock checking, coupon validation, price reconciliations.
+    3.  `ProductContext` — Listing database updates, category queries.
+    4.  `OrderContext` — Escrow holds, fulfillment status, payout requests.
+    5.  `CurrencyContext` — Country-region mappings, dynamic exchange conversions.
+    6.  `ToastContext` — Floating notification queue management.
+*   **Mock Database Sync**: `mockDb.js` enforces persistence in browser `localStorage`. Includes an automatic seeder generating **100 products** across **10 departments** with high-resolution Unsplash visuals.
+
+---
+
+## 📁 File Structure
 
 ```text
 Merchora/
-├── public/                 # Static assets
+├── public/                 # Static assets (custom logo.svg, icon.svg, favicon.svg)
 ├── src/
 │   ├── components/
 │   │   └── common/
-│   │       ├── Header.jsx  # Autocomplete search, theme toggle, and menu dropdown
-│   │       └── Footer.jsx  # Structured links and newsletter signups
+│   │       ├── Header.jsx  # Adaptive search bar, multi-currency dropdown, cart badge
+│   │       └── Footer.jsx  # Structured links and policy modal triggers
 │   ├── contexts/
-│   │   ├── AuthContext.jsx # Registration, login, and inactivity session watchdogs
-│   │   ├── CartContext.jsx # Cart modification and late-stage checkout caps
-│   │   ├── OrderContext.jsx# Checkout actions, splits, and analytics fetches
-│   │   └── ProductContext.jsx# Catalog querying and seller CRUDS
+│   │   ├── AuthContext.jsx # Auth session and watchdog timers
+│   │   ├── CartContext.jsx # Cart edits and stock constraints
+│   │   ├── CurrencyContext.jsx # Conversions and region controls
+│   │   ├── OrderContext.jsx# Escrow holds and analytics
+│   │   ├── ProductContext.jsx# Listing operations
+│   │   └── ToastContext.jsx# Toast notification stack
 │   ├── pages/
 │   │   ├── auth/
-│   │   │   ├── LoginPage.jsx   # Auth form validations and sandbox bypass
-│   │   │   └── RegisterPage.jsx# Role tabs, file uploads, and confirm dialogs
+│   │   │   ├── LoginPage.jsx   # Form validation and sandbox bypass
+│   │   │   └── RegisterPage.jsx# File upload validations and role tabs
 │   │   ├── buyer/
-│   │   │   ├── HomePage.jsx    # Category grid sliders and promo banners
-│   │   │   ├── CatalogPage.jsx # Filtering sidebar, sorting, and pagination
-│   │   │   ├── ProductDetailPage.jsx # Thumb galleries, variants, reviews
-│   │   │   ├── CartPage.jsx    # Cart manifests and promo vouchers
-│   │   │   ├── CheckoutPage.jsx# Multi-step checkout with late stock guards
-│   │   │   └── OrderHistoryPage.jsx # Order trackings and reorder button
+│   │   │   ├── HomePage.jsx    # Promo hero carousels and category sliders
+│   │   │   ├── CatalogPage.jsx # Multi-filter sidebar, paginated items
+│   │   │   ├── ProductDetailPage.jsx # Image zoom, variants selector, review submissions
+│   │   │   ├── CartPage.jsx    # Item summaries and coupon codes
+│   │   │   ├── CheckoutPage.jsx# Escrow validation details
+│   │   │   └── OrderHistoryPage.jsx # Fulfilled order logs and reorder buttons
 │   │   └── seller/
-│   │       ├── SellerDashboard.jsx  # Console layout, guards, and side navs
-│   │       ├── DashboardOverview.jsx# SVG line graphs, alerts, best-sellers
-│   │       ├── ProductManager.jsx   # Grid inventory tables and variant forms
-│   │       ├── OrderManager.jsx     # Fulfill action forms and tracking tags
-│   │       ├── Financials.jsx       # Balances sheets and ledger tables
-│   │       └── ProfileSettings.jsx  # EIN, bank target targets, verification
+│   │       ├── SellerDashboard.jsx  # Sidebar navigation and desktop layouts
+│   │       ├── DashboardOverview.jsx# SVG line graphs and best-sellers
+│   │       ├── ProductManager.jsx   # CRUD forms and SKU variant fields
+│   │       ├── OrderManager.jsx     # Order manifests and tracking code inputs
+│   │       ├── Financials.jsx       # Payout history ledgers and platform splits
+│   │       └── ProfileSettings.jsx  # Business documents and verification uploads
 │   ├── services/
-│   │   └── mockDb.js       # Persistent local storage CRUD and analytics compiler
-│   ├── styles/
-│   │   └── variables.css   # Theme configurations (Resides in index.css)
-│   ├── App.css             # Suppressed overrides
-│   ├── index.css           # Premium global design system
-│   ├── App.jsx             # Route guards and router paths
-│   └── main.jsx            # DOM renderer hook
-├── index.html              # SEO meta tags and link anchors
+│   │   └── mockDb.js       # Persistent browser database and analytics compiler
+│   ├── index.css           # Global HSL system, variables, resets, and utility classes
+│   ├── App.jsx             # Main routes definition and floating AI chat layout
+│   └── main.jsx            # React root mount script
+├── index.html              # Core HTML wrapper with SEO tags
 ├── package.json            # Scripts and dependencies
 └── vite.config.js          # Vite config
 ```
@@ -88,28 +117,27 @@ Merchora/
 
 To run this application locally, ensure you have **Node.js (v18+)** installed:
 
-### 1. Extract and install dependencies
+### 1. Install dependencies
 ```bash
 npm install
 ```
 
-### 2. Launch the Vite hot-reloading dev server
+### 2. Launch Vite development server
 ```bash
 npm run dev
 ```
-
-The terminal will print out the local network address (typically `http://localhost:5173`). Open it in any browser.
+Open `http://localhost:5173` in your browser.
 
 ### 3. Build for Production
-To build static production files under the `dist/` directory, run:
+To bundle static, optimized production assets under the `dist/` directory, run:
 ```bash
 npm run build
 ```
 
 ---
 
-## 🛡️ Escrow & Security Specifications
+## 🛡️ Business Safeguards & Escrow Rules
 
-1. **Escrow Guarantee:** Funds submitted by buyers are held securely. They are only marked as earnings for the seller once the shipping tracking status is verified.
-2. **Auto-logout Safety:** Sensitive authorization tokens (simulating HttpOnly tokens in memory) are wiped on tab closes or after inactivity timeouts to protect shared workspace machines.
-3. **Optimistic States:** All product additions and reviews update the local view instantly, falling back gracefully if underlying database requests fail.
+1.  **Platform Split:** A flat 10.0% commission fee is applied on completed sales transactions to fund server infrastructure, secure escrow storage, and customer dispute resolution.
+2.  **Payment Lock:** Customer checkouts are held securely in a pending escrow ledger. Payouts are only transferred to the merchant's net balance after they supply valid package shipping tracking information.
+3.  **Automatic Inactivity Guard:** The system terminates active user sessions if there is no user input (clicks, keystrokes, movements) detected for 10 minutes to protect shared merchant workspaces.
