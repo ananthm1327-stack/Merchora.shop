@@ -1,0 +1,68 @@
+# Merchora Logo Prompt for Manus.ai
+
+Paste the following creative brief directly into manus.ai to generate the logo suite.
+
+***
+
+Role: Lead Brand Identity & SVG UX Designer
+Task: Create a premium, responsive logo suite for the e-commerce app "Merchora"
+
+---
+
+### 1. BRAND STRATEGY & CONCEPT
+
+Name: Merchora (merchora.shop)
+Core Concept: A dual-sided, trust-based digital marketplace separating Buyers (shopping & escrow security) and Sellers (inventory dashboard & flat-rate shipping).
+Brand Personality: Modern, secure, futuristic, smooth, premium, clean.
+
+Visual Metaphor Objectives (Deliver a geometric brandmark representing these concepts):
+- Synergy / Handshake: The connection between buyer and seller.
+- Escrow / Safety: Sturdy, clean nodes or protective curves.
+- Speed / Commerce: Upward growth, infinity loop, or dynamic arcs.
+- The Letter "M": A customized modern letter M integrated into the geometry.
+
+---
+
+### 2. EXACT COLOR & TYPOGRAPHY SPECS
+
+You must use the following CSS color variables in the logo to match the app's stylesheet exactly:
+- Primary Brand Indigo: HSL(250, 65%, 55%) / HEX #5C55E6
+- Primary Brand Indigo Glow: HSL(250, 75%, 65%) / HEX #7971F2
+- Accent Magenta (Transactions): HSL(325, 75%, 55%) / HEX #E63595
+- Dark Mode Background: HSL(250, 20%, 8%) / HEX #0E0C14
+- Light Mode Background: HSL(250, 20%, 98%) / HEX #FAF9FC
+
+Typography:
+- Primary Display Font: "Outfit" (Sleek, geometric, sans-serif)
+- Secondary Font: "Inter" (Clean, high-legibility)
+
+---
+
+### 3. THE SUITE OF DELIVERABLES
+
+You must generate three specific visual layouts:
+1. Brand Icon Only: A square 512x512 canvas containing the abstract geometric "M" infinity/shield symbol.
+2. Full Logo Lockup: A horizontal layout (e.g., 600x120) with the brand icon on the left, followed by the text "Merchora" in the "Outfit" typography style.
+3. Favicon: A simplified, high-contrast, scalable 32x32 version of the icon optimized for browser tabs.
+
+---
+
+### 4. YOUR STEP-BY-STEP WORKFLOW
+
+Please execute the following steps:
+
+#### Step 1: Conceptualization & Sketching
+- Generate 3 distinct design directions (e.g., Option 1: Infinity Loop "M", Option 2: Shield/Bag Hybrid, Option 3: Modern Origami Layered Ribbon).
+- Describe the visual philosophy behind each direction.
+
+#### Step 2: SVG Implementation (Code Delivery)
+- Write clean, hand-coded, and semantic SVGs for the winning design.
+- Use `viewBox` settings to make the SVGs fully responsive.
+- Define gradients using `<linearGradient>` with the exact HSL/HEX color codes provided above.
+- Ensure the code has zero inline styles other than standard SVG attributes so it can be styled dynamically.
+
+#### Step 3: Animation (Optional enhancement)
+- Add a subtle CSS micro-animation hover effect inside the SVG (e.g., path stroke-dashoffset transition or light pulse gradient shift).
+
+#### Step 4: Preview Render
+- Provide a side-by-side dark-mode and light-mode mockup rendering of the SVGs so I can verify their contrast.
