@@ -1,8 +1,10 @@
 import React from 'react';
 import { ShoppingBag, ArrowRight, Zap, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export const Footer = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
   return (
     <>
       <style>{`
@@ -241,29 +243,31 @@ export const Footer = () => {
         }
       `}</style>
 
-      {/* Dynamic CTA Banner above the Footer */}
-      <section className="footer-cta-container">
-        <div className="footer-cta-card">
-          <div className="footer-cta-bg" />
-          <div className="footer-cta-overlay" />
-          <div className="footer-cta-content">
-            <h3 className="footer-cta-title">
-              Ready to Upgrade Your Commerce Experience?
-            </h3>
-            <p className="footer-cta-desc">
-              Create a merchant workspace to list collections in minutes, or explore thousands of verified digital products and streetwear collections.
-            </p>
+      {/* Dynamic CTA Banner above the Footer - Only on the Home Page */}
+      {isHomePage && (
+        <section className="footer-cta-container">
+          <div className="footer-cta-card">
+            <div className="footer-cta-bg" />
+            <div className="footer-cta-overlay" />
+            <div className="footer-cta-content">
+              <h3 className="footer-cta-title">
+                Ready to Upgrade Your Commerce Experience?
+              </h3>
+              <p className="footer-cta-desc">
+                Create a merchant workspace to list collections in minutes, or explore thousands of verified digital products and streetwear collections.
+              </p>
+            </div>
+            <div className="footer-cta-actions">
+              <Link to="/register" className="footer-cta-btn-primary">
+                <Zap size={16} /> Start Selling
+              </Link>
+              <Link to="/catalog" className="footer-cta-btn-secondary">
+                Browse Goods <ChevronRight size={16} />
+              </Link>
+            </div>
           </div>
-          <div className="footer-cta-actions">
-            <Link to="/register" className="footer-cta-btn-primary">
-              <Zap size={16} /> Start Selling
-            </Link>
-            <Link to="/catalog" className="footer-cta-btn-secondary">
-              Browse Goods <ChevronRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Futuristic Footer */}
       <footer className="futur-footer">
