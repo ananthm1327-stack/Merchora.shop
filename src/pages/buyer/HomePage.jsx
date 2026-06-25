@@ -391,40 +391,147 @@ export const HomePage = () => {
 
       {/* 4. Promotional Highlights Banner */}
       <section className="container" style={{ marginTop: '80px' }}>
-        <div className="card" style={{
-          background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
-          color: 'var(--text-on-accent)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '50px',
-          textAlign: 'left',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{ position: 'relative', zIndex: 2, maxWidth: '500px' }}>
-            <span className="badge" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', color: 'var(--text-on-accent)', marginBottom: '14px' }}>
+        <style>{`
+          .promo-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(7, 200, 249, 0.2);
+            height: 380px;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            text-align: left;
+          }
+          .promo-card:hover {
+            border-color: rgba(7, 200, 249, 0.4);
+            box-shadow: 0 10px 30px rgba(7, 200, 249, 0.15);
+          }
+          .promo-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url(/promo_banner_bg.jpg) no-repeat center right / cover;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 1;
+          }
+          .promo-card:hover .promo-bg {
+            transform: scale(1.05);
+          }
+          .promo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(10, 10, 18, 0.85) 0%, rgba(10, 10, 18, 0.65) 45%, rgba(10, 10, 18, 0.1) 100%);
+            z-index: 2;
+          }
+          @media (max-width: 768px) {
+            .promo-overlay {
+              background: rgba(10, 10, 18, 0.85);
+            }
+          }
+          .promo-content {
+            position: relative;
+            z-index: 3;
+            max-width: 520px;
+            padding: 50px;
+          }
+          @media (max-width: 576px) {
+            .promo-content {
+              padding: 30px 20px;
+            }
+            .promo-card {
+              height: auto;
+              min-height: 380px;
+            }
+          }
+          .promo-badge {
+            background: linear-gradient(90deg, #07C8F9, #0D41E1);
+            color: #fff;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+            border-radius: var(--radius-full);
+            display: inline-block;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 10px rgba(7, 200, 249, 0.3);
+          }
+          .promo-title {
+            font-family: var(--font-display);
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 14px;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+          }
+          .promo-desc {
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 28px;
+            font-size: 1rem;
+            line-height: 1.5;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+          }
+          .promo-code-box {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            color: #07C8F9;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-family: monospace;
+            margin-left: 4px;
+          }
+          .promo-btn {
+            background: #fff;
+            color: #0c1020;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            display: inline-block;
+          }
+          .promo-btn:hover {
+            background: linear-gradient(90deg, #07C8F9, #0D41E1);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(7, 200, 249, 0.4);
+          }
+        `}</style>
+        
+        <div className="promo-card">
+          {/* Background Image with Zoom effect */}
+          <div className="promo-bg" />
+          
+          {/* Dark gradient overlay for readability */}
+          <div className="promo-overlay" />
+          
+          {/* Content Area */}
+          <div className="promo-content">
+            <span className="promo-badge">
               OFFER OF THE MONTH
             </span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-on-accent)', marginBottom: '14px', lineHeight: 1.1 }}>
+            <h2 className="promo-title">
               Save 10% on your first checkout purchase
             </h2>
-            <p style={{ color: 'rgba(255, 255, 255, 0.85)', marginBottom: '30px' }}>
-              Use coupon code <strong style={{ textDecoration: 'underline' }}>MERCHORA10</strong> at checkout to apply a 10% discount on all store collections.
+            <p className="promo-desc">
+              Explore our curated collections of premium electronics, fashion, and lifestyle items. Use coupon code 
+              <span className="promo-code-box">MERCHORA10</span> to apply a 10% discount at checkout.
             </p>
-            <Link to="/catalog" className="btn" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
+            <Link to="/catalog" className="promo-btn">
               Explore Catalog
             </Link>
-          </div>
-          <div className="flex-mobile-hide" style={{
-            position: 'absolute',
-            right: '-30px',
-            bottom: '-40px',
-            opacity: 0.15,
-            fontSize: '12rem',
-            fontWeight: 900,
-            pointerEvents: 'none',
-            userSelect: 'none'
-          }}>
-            %
           </div>
         </div>
       </section>
