@@ -45,6 +45,104 @@ const SellerProtectedRoute = ({ children }) => {
   return children;
 };
 
+// 🛍️ Cursor and Click Sparks Effect Component
+const CursorAndSparks = () => {
+  const cursorRef = useRef(null);
+  const ringRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Check if device supports hover interactions (desktop vs touch)
+    const checkHoverSupport = () => {
+      setIsMobile(!window.matchMedia('(hover: hover)').matches);
+    };
+    checkHoverSupport();
+    window.addEventListener('resize', checkHoverSupport);
+
+    // Track mouse position to update cursor position
+    const onMouseMove = (e) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.left = `${e.clientX}px`;
+        cursorRef.current.style.top = `${e.clientY}px`;
+      }
+      if (ringRef.current) {
+        ringRef.current.style.left = `${e.clientX}px`;
+        ringRef.current.style.top = `${e.clientY}px`;
+      }
+    };
+
+    // Expand cursor ring when hovering over interactive elements
+    const handleMouseOver = (e) => {
+      const target = e.target;
+      const isInteractive = target.closest('a, button, select, input, textarea, [role="button"], .card, .btn, .tab-btn');
+      if (isInteractive) {
+        cursorRef.current?.classList.add('hovered');
+        ringRef.current?.classList.add('hovered');
+      } else {
+        cursorRef.current?.classList.remove('hovered');
+        ringRef.current?.classList.remove('hovered');
+      }
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      window.removeEventListener('resize', checkHoverSupport);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, []);
+
+  // Click Sparks listener (spawns floating ecommerce themed emojis)
+  useEffect(() => {
+    const emojis = ['🛍️', '🛒', '🏷️', '🎁', '✨', '💸', '💎', '💳', '📦'];
+
+    const onClick = (e) => {
+      const sparkCount = 8;
+      for (let i = 0; i < sparkCount; i++) {
+        const spark = document.createElement('span');
+        spark.className = 'click-spark-emoji';
+        spark.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        // Page coordinates are relative to document page scroll
+        spark.style.left = `${e.pageX}px`;
+        spark.style.top = `${e.pageY}px`;
+
+        // Calculate dynamic random trajectories
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 40 + Math.random() * 80;
+        const dx = `${Math.cos(angle) * distance}px`;
+        const dy = `${Math.sin(angle) * distance}px`;
+        const rot = `${(Math.random() - 0.5) * 180}deg`;
+
+        spark.style.setProperty('--dx', dx);
+        spark.style.setProperty('--dy', dy);
+        spark.style.setProperty('--rot', rot);
+
+        document.body.appendChild(spark);
+
+        // Remove element once CSS animation has finished
+        setTimeout(() => {
+          spark.remove();
+        }, 800);
+      }
+    };
+
+    window.addEventListener('click', onClick);
+    return () => window.removeEventListener('click', onClick);
+  }, []);
+
+  if (isMobile) return null;
+
+  return (
+    <>
+      <div ref={cursorRef} className="custom-cursor" />
+      <div ref={ringRef} className="custom-cursor-ring" />
+    </>
+  );
+};
+
 // Main Layout Manager that conditionally renders headers, footers, cookie banners, and global modals
 const LayoutManager = () => {
   const location = useLocation();
@@ -239,6 +337,7 @@ const LayoutManager = () => {
 
   return (
     <>
+      <CursorAndSparks />
       <Header />
       
       <div className="flex-1 flex flex-col" style={{ width: '100%' }}>
