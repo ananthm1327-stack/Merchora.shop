@@ -500,47 +500,32 @@ dialog::backdrop {
   background-color: var(--bg-tertiary);
 }
 
-/* Custom Cursor & Click Sparks */
+/* Custom Cursor Sparkle Trail & Click Sparks */
 @media (hover: hover) {
-  html, body, button, a, select, input, textarea, [role="button"] {
-    cursor: none !important; /* Hide default cursor on desktop */
+  * {
+    cursor: none !important; /* Hide default cursor everywhere on desktop */
   }
-  
-  .custom-cursor {
-    width: 8px;
-    height: 8px;
-    background: var(--primary-gradient);
-    border-radius: 50%;
-    position: fixed;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 9999;
-    transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+/* Trail Sparkles */
+.trail-sparkle {
+  position: absolute;
+  pointer-events: none;
+  font-size: 0.95rem;
+  z-index: 9999;
+  animation: sparkle-trail-fade 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform, opacity;
+  text-shadow: 0 0 5px currentColor;
+}
+
+@keyframes sparkle-trail-fade {
+  0% {
+    transform: translate(-50%, -50%) scale(var(--scale)) rotate(0deg);
+    opacity: 1;
   }
-  
-  .custom-cursor-ring {
-    width: 30px;
-    height: 30px;
-    border: 2px solid var(--primary);
-    border-radius: 50%;
-    position: fixed;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 9998;
-    transition: width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s, transform 0.08s cubic-bezier(0.1, 0.8, 0.3, 1);
-  }
-  
-  /* Hover state expansions */
-  .custom-cursor.hovered {
-    width: 4px;
-    height: 4px;
-    background: var(--accent);
-  }
-  .custom-cursor-ring.hovered {
-    width: 44px;
-    height: 44px;
-    border-color: var(--accent);
-    background-color: rgba(230, 53, 149, 0.05); /* very light accent glow */
+  100% {
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0) rotate(var(--rot));
+    opacity: 0;
   }
 }
 

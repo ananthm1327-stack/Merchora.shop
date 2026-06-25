@@ -45,11 +45,10 @@ const SellerProtectedRoute = ({ children }) => {
   return children;
 };
 
-// 🛍️ Cursor and Click Sparks Effect Component
+// 🛍️ Cursor Sparkle Trail and Click Sparks Effect Component
 const CursorAndSparks = () => {
-  const cursorRef = useRef(null);
-  const ringRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const lastPos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     // Check if device supports hover interactions (desktop vs touch)
@@ -59,40 +58,53 @@ const CursorAndSparks = () => {
     checkHoverSupport();
     window.addEventListener('resize', checkHoverSupport);
 
-    // Track mouse position to update cursor position
+    // Dynamic Sparkle Trail on Mouse Move
     const onMouseMove = (e) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.left = `${e.clientX}px`;
-        cursorRef.current.style.top = `${e.clientY}px`;
-      }
-      if (ringRef.current) {
-        ringRef.current.style.left = `${e.clientX}px`;
-        ringRef.current.style.top = `${e.clientY}px`;
-      }
-    };
+      if (isMobile) return;
 
-    // Expand cursor ring when hovering over interactive elements
-    const handleMouseOver = (e) => {
-      const target = e.target;
-      const isInteractive = target.closest('a, button, select, input, textarea, [role="button"], .card, .btn, .tab-btn');
-      if (isInteractive) {
-        cursorRef.current?.classList.add('hovered');
-        ringRef.current?.classList.add('hovered');
-      } else {
-        cursorRef.current?.classList.remove('hovered');
-        ringRef.current?.classList.remove('hovered');
-      }
+      // Calculate distance from last spawned sparkle
+      const dist = Math.hypot(e.clientX - lastPos.current.x, e.clientY - lastPos.current.y);
+      if (dist < 12) return; // spawn every 12 pixels to balance density and performance
+
+      lastPos.current = { x: e.clientX, y: e.clientY };
+
+      const shapes = ['✨', '⭐', '•'];
+      const colors = ['#07C8F9', '#0D41E1', '#E63595', '#FFD700']; // cyan, blue, magenta, gold
+
+      const sparkle = document.createElement('span');
+      sparkle.className = 'trail-sparkle';
+      sparkle.innerText = shapes[Math.floor(Math.random() * shapes.length)];
+      
+      // Page coordinates are relative to document page scroll
+      sparkle.style.left = `${e.pageX}px`;
+      sparkle.style.top = `${e.pageY}px`;
+      sparkle.style.color = colors[Math.floor(Math.random() * colors.length)];
+
+      // Random scale and slight offset drift
+      const scale = 0.5 + Math.random() * 0.8;
+      const rot = `${Math.random() * 360}deg`;
+      const dx = `${(Math.random() - 0.5) * 24}px`;
+      const dy = `${(Math.random() - 0.5) * 24 - 15}px`; // drift slightly upward
+
+      sparkle.style.setProperty('--scale', scale);
+      sparkle.style.setProperty('--rot', rot);
+      sparkle.style.setProperty('--dx', dx);
+      sparkle.style.setProperty('--dy', dy);
+
+      document.body.appendChild(sparkle);
+
+      // Remove element once CSS animation has finished
+      setTimeout(() => {
+        sparkle.remove();
+      }, 600);
     };
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseover', handleMouseOver);
-
     return () => {
       window.removeEventListener('resize', checkHoverSupport);
       window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, []);
+  }, [isMobile]);
 
   // Click Sparks listener (spawns floating ecommerce themed emojis)
   useEffect(() => {
@@ -133,14 +145,7 @@ const CursorAndSparks = () => {
     return () => window.removeEventListener('click', onClick);
   }, []);
 
-  if (isMobile) return null;
-
-  return (
-    <>
-      <div ref={cursorRef} className="custom-cursor" />
-      <div ref={ringRef} className="custom-cursor-ring" />
-    </>
-  );
+  return null;
 };
 
 // Main Layout Manager that conditionally renders headers, footers, cookie banners, and global modals
