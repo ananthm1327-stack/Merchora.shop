@@ -2,7 +2,7 @@
 
 :root {
   /* HSL Color Tokens */
-  --hue: 250;
+  --hue: 215;
   
   /* Light Theme */
   --bg-primary: hsl(var(--hue), 20%, 98%);
@@ -19,7 +19,8 @@
   
   --primary: hsl(var(--hue), 65%, 55%);
   --primary-hover: hsl(var(--hue), 65%, 48%);
-  --primary-glow: rgba(99, 102, 241, 0.15);
+  --primary-glow: rgba(13, 65, 225, 0.15);
+  --primary-gradient: linear-gradient(90deg, #07C8F9, #0D41E1);
   
   --accent: hsl(325, 75%, 55%);
   --accent-hover: hsl(325, 75%, 48%);
@@ -63,7 +64,8 @@
   
   --primary: hsl(var(--hue), 75%, 65%);
   --primary-hover: hsl(var(--hue), 75%, 72%);
-  --primary-glow: rgba(129, 140, 248, 0.25);
+  --primary-glow: rgba(7, 200, 249, 0.25);
+  --primary-gradient: linear-gradient(90deg, #07C8F9, #0D41E1);
   
   --success: hsl(142, 60%, 50%);
   --success-bg: rgba(16, 185, 129, 0.1);
@@ -156,7 +158,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: linear-gradient(135deg, #07C8F9, var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -211,12 +213,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: var(--primary-gradient);
   color: var(--text-on-accent);
   box-shadow: 0 4px 14px var(--primary-glow);
+  border: none;
 }
 .btn-primary:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(90deg, #0ce0ff, #1c52f2);
   transform: translateY(-1px);
   box-shadow: 0 6px 18px var(--primary-glow);
 }
