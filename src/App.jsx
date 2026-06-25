@@ -74,7 +74,7 @@ const LayoutManager = () => {
   const [chatHistory, setChatHistory] = useState([
     {
       sender: 'bot',
-      text: "Hello! I am Merchora's AI Shopping Assistant. How can I help you today? You can ask me to recommend items (e.g. 'recommend shoes', 'do you have face serum?'), search under a budget (e.g. 'electronics under $100'), or ask about our escrow and shipping policies."
+      text: "Hello! I am LANA, Merchora's AI Shopping Assistant. How can I help you today? You can ask me to recommend items (e.g. 'recommend shoes', 'do you have face serum?'), search under a budget (e.g. 'electronics under $100'), or ask about our escrow and shipping policies."
     }
   ]);
   const [isChatTyping, setIsChatTyping] = useState(false);
@@ -517,7 +517,7 @@ const LayoutManager = () => {
                   </div>
                   <div>
                     <h4 style={{ fontSize: '0.8rem', fontWeight: 700, fontFamily: 'var(--font-display)' }} className="flex align-center gap-xs">
-                      Shopping Agent <Sparkles size={10} style={{ color: 'var(--primary)' }} />
+                      LANA <Sparkles size={10} style={{ color: 'var(--primary)' }} />
                     </h4>
                     <span style={{ fontSize: '0.65rem', color: 'var(--success)', display: 'block', fontWeight: 600 }}>● Instant Assistant</span>
                   </div>
@@ -540,7 +540,7 @@ const LayoutManager = () => {
                       alignSelf: isBot ? 'flex-start' : 'flex-end'
                     }}>
                       <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', marginBottom: '2px', fontWeight: 600 }}>
-                        {isBot ? 'Merchora AI' : 'You'}
+                        {isBot ? 'LANA' : 'You'}
                       </span>
                       
                       <div style={{ 
@@ -597,7 +597,7 @@ const LayoutManager = () => {
                 {/* Typing indicator */}
                 {isChatTyping && (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', alignSelf: 'flex-start' }}>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', marginBottom: '2px' }}>Merchora AI</span>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--text-tertiary)', marginBottom: '2px' }}>LANA</span>
                     <div style={{ padding: '8px 14px', borderRadius: '0 12px 12px 12px', backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }} className="flex gap-xs align-center">
                       <span className="dot-blink" style={{ animation: 'blink 1s infinite 0.1s' }}>•</span>
                       <span className="dot-blink" style={{ animation: 'blink 1s infinite 0.2s' }}>•</span>
