@@ -6,7 +6,7 @@ import { useProducts } from '../../contexts/ProductContext';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { 
   Search, ShoppingCart, User, LogOut, Heart, 
-  Sun, Moon, ChevronDown, Store, ShoppingBag, Menu, X
+  Sun, Moon, ChevronDown, Store, ShoppingBag, Menu, X, Clock
 } from 'lucide-react';
 
 export const Header = () => {
@@ -27,6 +27,41 @@ export const Header = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  
+  // Search History State
+  const [searchHistory, setSearchHistory] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('merchora_search_history')) || [];
+    } catch {
+      return [];
+    }
+  });
+
+  const addToHistory = (query) => {
+    if (!query || !query.trim()) return;
+    const trimmed = query.trim();
+    setSearchHistory(prev => {
+      const filtered = prev.filter(item => item.toLowerCase() !== trimmed.toLowerCase());
+      const nextHistory = [trimmed, ...filtered].slice(0, 5);
+      localStorage.setItem('merchora_search_history', JSON.stringify(nextHistory));
+      return nextHistory;
+    });
+  };
+
+  const deleteHistoryItem = (e, itemToDelete) => {
+    e.stopPropagation();
+    setSearchHistory(prev => {
+      const nextHistory = prev.filter(item => item !== itemToDelete);
+      localStorage.setItem('merchora_search_history', JSON.stringify(nextHistory));
+      return nextHistory;
+    });
+  };
+
+  const clearHistory = (e) => {
+    e.stopPropagation();
+    setSearchHistory([]);
+    localStorage.removeItem('merchora_search_history');
+  };
   
   // Theme switcher
   const [theme, setTheme] = useState(localStorage.getItem('merchora_theme') || 'light');
@@ -83,17 +118,21 @@ export const Header = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (searchQuery.trim()) params.set('search', searchQuery.trim());
+    if (searchQuery.trim()) {
+      params.set('search', searchQuery.trim());
+      addToHistory(searchQuery.trim());
+    }
     if (searchCategory !== 'All') params.set('category', searchCategory);
     
     navigate(`/catalog?${params.toString()}`);
     setShowSuggestions(false);
   };
 
-  const handleSuggestionClick = (prodId) => {
+  const handleSuggestionClick = (prod) => {
+    addToHistory(prod.title);
     setSearchQuery('');
     setShowSuggestions(false);
-    navigate(`/product/${prodId}`);
+    navigate(`/product/${prod.id}`);
   };
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -124,14 +163,14 @@ export const Header = () => {
             onSubmit={handleSearchSubmit} 
             className="search-form-header flex-1 flex align-center" 
             style={{ 
-              maxWidth: '520px', 
+              maxWidth: '680px', 
               margin: '0 20px', 
               position: 'relative',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-full)',
               backgroundColor: 'var(--bg-secondary)',
               overflow: 'hidden',
-              height: '42px',
+              height: '46px',
               boxShadow: 'var(--shadow-sm)'
             }}
           >
@@ -154,7 +193,9 @@ export const Header = () => {
                 backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'8\' height=\'8\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b6375\' stroke-width=\'3\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpolyline points=\'6 9 12 15 18 9\'%3E%3C/polyline%3E%3C/svg%3E")',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right 10px center',
-                backgroundSize: '8px'
+                backgroundSize: '8px',
+                borderTopLeftRadius: 'var(--radius-full)',
+                borderBottomLeftRadius: 'var(--radius-full)'
               }}
               title="Search Category"
             >
@@ -188,7 +229,7 @@ export const Header = () => {
                 backgroundColor: 'transparent',
                 border: 'none',
                 color: 'var(--text-primary)',
-                fontSize: '0.85rem'
+                fontSize: '0.875rem'
               }}
             />
 
@@ -197,45 +238,150 @@ export const Header = () => {
               type="submit" 
               style={{ 
                 height: '100%', 
-                padding: '0 18px', 
+                padding: '0 20px', 
                 backgroundColor: 'var(--primary)', 
                 color: 'var(--text-on-accent)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'background-color var(--transition-fast)'
+                transition: 'background-color var(--transition-fast)',
+                border: 'none',
+                cursor: 'pointer'
               }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-hover)'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--primary)'}
             >
-              <Search size={16} />
+              <Search size={18} />
             </button>
 
-            {/* Autocomplete Suggestions */}
-            {showSuggestions && suggestions.length > 0 && (
-              <div className="autocomplete-dropdown card" style={{ padding: '8px 0', marginTop: '48px', width: '100%', left: 0 }}>
-                <div style={{ padding: '6px 16px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-color)' }}>
-                  SUGGESTED MATCHES
-                </div>
-                {suggestions.map(prod => (
-                  <div
-                    key={prod.id}
-                    onClick={() => handleSuggestionClick(prod.id)}
-                    className="autocomplete-item"
-                    style={{ fontSize: '0.875rem' }}
-                  >
-                    <img 
-                      src={prod.images[0]} 
-                      alt={prod.title} 
-                      style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '4px' }} 
-                    />
-                    <div className="flex-1 text-left" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      <div style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{prod.title}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{prod.category}</div>
-                    </div>
-                    <div style={{ fontWeight: 600, color: 'var(--primary)' }}>${prod.price}</div>
+            {/* Autocomplete & History Dropdown */}
+            {showSuggestions && (
+              <div 
+                className="autocomplete-dropdown card glass" 
+                style={{ 
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  width: '100%',
+                  marginTop: '8px', 
+                  padding: '8px 0', 
+                  zIndex: 1000,
+                  boxShadow: 'var(--shadow-lg)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'var(--bg-secondary)',
+                  maxHeight: '400px',
+                  overflowY: 'auto'
+                }}
+              >
+                {!searchQuery.trim() ? (
+                  /* History and popular categories state when query is empty */
+                  <div>
+                    {searchHistory.length > 0 ? (
+                      <>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-color)', letterSpacing: '0.5px' }}>
+                          <span>RECENT SEARCHES</span>
+                          <button 
+                            type="button"
+                            onClick={clearHistory}
+                            style={{ color: 'var(--text-tertiary)', fontSize: '0.7rem', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer', border: 'none', background: 'none' }}
+                          >
+                            Clear All
+                          </button>
+                        </div>
+                        {searchHistory.map((item, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setSearchQuery(item);
+                              const params = new URLSearchParams();
+                              params.set('search', item);
+                              if (searchCategory !== 'All') params.set('category', searchCategory);
+                              navigate(`/catalog?${params.toString()}`);
+                              setShowSuggestions(false);
+                            }}
+                            className="autocomplete-item flex align-center justify-between"
+                            style={{ fontSize: '0.85rem', cursor: 'pointer', padding: '10px 16px' }}
+                          >
+                            <span className="flex align-center gap-sm" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
+                              <Clock size={14} style={{ color: 'var(--text-tertiary)' }} />
+                              {item}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => deleteHistoryItem(e, item)}
+                              style={{ padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', color: 'var(--text-tertiary)', cursor: 'pointer', border: 'none', background: 'none' }}
+                              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--danger)'}
+                              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                              title="Delete search"
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      /* Display Popular/Suggested Categories when history is empty */
+                      <>
+                        <div style={{ padding: '8px 16px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-color)', letterSpacing: '0.5px' }}>
+                          <span>POPULAR CATEGORIES</span>
+                        </div>
+                        {['Apparel', 'Electronics', 'Footwear', 'Accessories', 'Home & Living'].map((cat, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setSearchCategory(cat);
+                              const params = new URLSearchParams();
+                              params.set('category', cat);
+                              navigate(`/catalog?${params.toString()}`);
+                              setShowSuggestions(false);
+                            }}
+                            className="autocomplete-item flex align-center gap-sm"
+                            style={{ fontSize: '0.85rem', cursor: 'pointer', padding: '10px 16px', color: 'var(--text-primary)', fontWeight: 500 }}
+                          >
+                            <Search size={14} style={{ color: 'var(--text-tertiary)' }} />
+                            <span>Trending in <strong>{cat}</strong></span>
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </div>
-                ))}
+                ) : (
+                  /* Autocomplete Suggestions state when typing */
+                  <div>
+                    {suggestions.length > 0 ? (
+                      <>
+                        <div style={{ padding: '8px 16px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-color)', letterSpacing: '0.5px' }}>
+                          <span>SUGGESTED MATCHES</span>
+                        </div>
+                        {suggestions.map(prod => (
+                          <div
+                            key={prod.id}
+                            onClick={() => handleSuggestionClick(prod)}
+                            className="autocomplete-item text-left flex align-center gap-md"
+                            style={{ fontSize: '0.875rem', cursor: 'pointer', padding: '10px 16px' }}
+                          >
+                            <img 
+                              src={prod.images[0]} 
+                              alt={prod.title} 
+                              style={{ width: '36px', height: '36px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} 
+                            />
+                            <div className="flex-1 text-left" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{prod.title}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{prod.category}</div>
+                            </div>
+                            <div style={{ fontWeight: 700, color: 'var(--primary)' }}>${prod.price}</div>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      /* No results found message */
+                      <div style={{ padding: '20px 16px', fontSize: '0.85rem', color: 'var(--text-secondary)', textAlign: 'center' }}>
+                        No matches found for "{searchQuery}"
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </form>
@@ -578,6 +724,23 @@ export const Header = () => {
 
       {/* Styled utilities for responsive hiding */}
       <style>{`
+        .search-form-header {
+          transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .search-form-header:focus-within {
+          border-color: var(--primary) !important;
+          box-shadow: 0 0 14px rgba(7, 200, 249, 0.25) !important;
+        }
+        .autocomplete-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 10px 16px;
+          transition: background-color var(--transition-fast), color var(--transition-fast);
+        }
+        .autocomplete-item:hover {
+          background-color: var(--bg-tertiary);
+        }
         @media (max-width: 768px) {
           .flex-mobile-hide { display: none !important; }
           .flex-mobile-show { display: flex !important; }
