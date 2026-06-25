@@ -15,17 +15,18 @@ export const Footer = () => {
         .footer-cta-card {
           position: relative;
           overflow: hidden;
-          background: rgba(10, 10, 18, 0.7);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
           border: 1px solid rgba(7, 200, 249, 0.2);
           border-radius: var(--radius-lg);
           padding: 60px 50px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(7, 200, 249, 0.1);
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(7, 200, 249, 0.15);
           display: flex;
           justify-content: space-between;
           align-items: center;
           gap: 40px;
+          transition: border-color 0.3s ease;
+        }
+        .footer-cta-card:hover {
+          border-color: rgba(7, 200, 249, 0.4);
         }
         @media (max-width: 992px) {
           .footer-cta-card {
@@ -34,16 +35,32 @@ export const Footer = () => {
             padding: 40px 30px;
           }
         }
-        .footer-cta-bg-glow {
+        .footer-cta-bg {
           position: absolute;
-          top: -50%;
-          right: -20%;
-          width: 500px;
-          height: 500px;
-          background: radial-gradient(circle, rgba(7, 200, 249, 0.15) 0%, rgba(13, 65, 225, 0.05) 50%, transparent 100%);
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: url(/cta_banner_bg.jpg) no-repeat center center / cover;
+          transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           z-index: 1;
-          pointer-events: none;
-          filter: blur(40px);
+        }
+        .footer-cta-card:hover .footer-cta-bg {
+          transform: scale(1.05);
+        }
+        .footer-cta-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, rgba(8, 8, 14, 0.92) 0%, rgba(8, 8, 14, 0.78) 50%, rgba(8, 8, 14, 0.55) 100%);
+          z-index: 2;
+        }
+        @media (max-width: 992px) {
+          .footer-cta-overlay {
+            background: rgba(8, 8, 14, 0.88);
+          }
         }
         .footer-cta-content {
           position: relative;
@@ -227,7 +244,8 @@ export const Footer = () => {
       {/* Dynamic CTA Banner above the Footer */}
       <section className="footer-cta-container">
         <div className="footer-cta-card">
-          <div className="footer-cta-bg-glow" />
+          <div className="footer-cta-bg" />
+          <div className="footer-cta-overlay" />
           <div className="footer-cta-content">
             <h3 className="footer-cta-title">
               Ready to Upgrade Your Commerce Experience?
